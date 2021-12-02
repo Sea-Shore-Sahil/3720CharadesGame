@@ -1,6 +1,6 @@
 #cpsc3720
 
-import pygame, sys, random, time
+import pygame, sys, random, time, pygame_menu
 from database.database import Database
 check_errors = pygame.init()
 
@@ -36,7 +36,18 @@ orange = (245, 102,0)
 blue = (0, 32, 91)
 purple = (46,26,71)
 
+genre_menu = pygame_menu.Menu('Select Genre', X, Y, theme=pygame_menu.themes.THEME_BLUE)
+main_menu = pygame_menu.Menu('Charades', X, Y, theme=pygame_menu.themes.THEME_BLUE)
+play_menu = pygame_menu.Menu('Play', X, Y, theme=pygame_menu.themes.THEME_BLUE)
+end_menu = pygame_menu.Menu('Time Up!', X, Y, theme=pygame_menu.themes.THEME_BLUE)
+
+genre_menu.disable()
+main_menu.disable()
+play_menu.disable()
+end_menu.disable()
+
 db = Database()
+selected_words = []
 
 def activeRound():
     active = font.render('ACTIVE ROUND', True, purple) 
@@ -65,6 +76,33 @@ def currentCard():
     currCardRect.midtop = (X/2, Y/2-40)
     screen.blit(currCard, currCardRect) 
 
+def selectScreen():
+    screen.fill((0,0,0))
+    #menu.add.menu_link()
+    genre_menu.enable()
+    genre_menu.add.button('History', currentCard('History'))
+    genre_menu.add.button('Celebrities', currentCard('Celebrities'))
+    genre_menu.add.button('Movies', currentCard('Movies'))
+    #genre_menu.mainloop(screen)
+    
+
+def currentCard(genre_str):
+    genre_menu.disable()
+    genre_menu.full_reset()
+    play_menu.enable()
+    selected_words = db.get_cards([genre_str])
+    word = selected_words[random.randint(0,len(selected_words)-1)]
+
+    #menu = pygame_menu.Menu(genre_str, 720, 400, theme=pygame_menu.themes.THEME_BLUE)
+    play_menu.add.label(word, word)
+    #play_menu.mainloop(screen)
+
+    #currCard = font.render(word, True, blue) 
+    #currCardRect = currCard.get_rect()
+    #currCardRect.midtop = (X/2, Y/2-40)
+    #screen.blit(currCard, currCardRect) 
+
+
 #cocntroller
 fpsController = pygame.time.Clock()
 
@@ -78,6 +116,7 @@ pygame.time.set_timer(pygame.USEREVENT, 1000)
 #game logic
 while True:
     screen.fill((255,255,255))
+
     #the timer
     timer = medFont.render('Time left: ' + str(clock), True, orange)
     screen.blit(timer, (290, 75))
@@ -97,15 +136,20 @@ while True:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
             clock = 60 ; pygame.time.set_timer(pygame.USEREVENT, 1000)   
 
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        #     if screenW/2-65 <= mouse[0] <= screenW/2-65+140 and screenH/2+50 <= mouse[1] <= screenH/2+50+40:
-        #         #this is where we would get new card
+        #if event.type == pygame.MOUSEBUTTONDOWN:
+        #    if screenW/2-65 <= mouse[0] <= screenW/2-65+140 and screenH/2+50 <= mouse[1] <= screenH/2+50+40:
+        #        pass
+        #        
         
         #get the pos of the mouse so we can know which button
         mouse = pygame.mouse.get_pos()
-        activeRound()
-        nextCardButton()
-        currentCard()
+        selectScreen()
+        genre_menu.enable()
+        genre_menu.mainloop(screen)
+        #activeRound()
+        #nextCardButton()
+        #currentCard()
+
         #update game
         pygame.display.update()
 

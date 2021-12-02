@@ -2,7 +2,8 @@ import sqlite3, random
 
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect('database/charades.db')
+        self.connection = sqlite3.connect('3720CharadesGame\database\charades.db')
+        
 
     def get_cards(self, genres):
         query_string = 'WHERE GENRE ='

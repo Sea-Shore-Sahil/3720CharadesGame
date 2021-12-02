@@ -5,9 +5,8 @@
 ## Running the Game Locally
 - First make sure you are on Zoom with your team members
 - Each team member needs to download the zip of this repo
-- To run the game you must install PyGame and PyGame-menu
+- To run the game you must install PyGame
 - python3 -m pip install -U pygame --user (some users are able to just do pip install pygame)
-- python3 -m pip install -U pygame-menu --user
 
 ## Game Instructions
 - Divide your team members up into two teams with even members and choose a score keeper
